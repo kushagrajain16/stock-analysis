@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stock Comparison Results</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+    <h1>Stock Comparison Results</h1>
+    <div class="results-container">
+        <h2>Daily Returns</h2>
+        <div class="plotly-graph-div">{{ results.daily_returns_div|safe }}</div>
+
+        <h2>Cumulative Returns</h2>
+        <div class="plotly-graph-div">{{ results.cumulative_returns_div|safe }}</div>
+
+        <h2>Volatility Comparison</h2>
+        <div class="plotly-graph-div">{{ results.volatility_div|safe }}</div>
+
+        <h2>Beta Comparison</h2>
+        <p>Beta for {{ ticker1|safe }}: {{ results.beta_stock1 }}</p>
+        <p>Beta for {{ ticker2|safe }}: {{ results.beta_stock2 }}</p>
+        <p>{{ results.conclusion }}</p>
+        
+        <h2>Mean Squared Error</h2>
+        <p>MSE for {{ ticker1|safe }}: {{ results.mse_stock1 }}</p>
+        <p>MSE for {{ ticker2|safe }}: {{ results.mse_stock2 }}</p>
+        
+    </div>
+</body>
+</html>
