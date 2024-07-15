@@ -1,32 +1,24 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stock Comparison</title>
-    <link rel="stylesheet" href="./static/style.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
     <div class="container">
-        <h1>Stock Comparison</h1>
+        <h1>Compare Two Stocks</h1>
         <form action="/compare" method="post">
-            <div class="form-group">
-                <label for="company1">Company 1:</label>
-                <input type="text" id="company1" name="company1" required>
-            </div>
-            <div class="form-group">
-                <label for="company2">Company 2:</label>
-                <input type="text" id="company2" name="company2" required>
-            </div>
-            <div class="form-group">
-                <label for="days">Number of Days:</label>
-                <input type="number" id="days" name="days" value="90" required>
-            </div>
+            <label for="company1">First Company Ticker:</label>
+            <input type="text" id="company1" name="company1" required>
+            <br>
+            <label for="company2">Second Company Ticker:</label>
+            <input type="text" id="company2" name="company2" required>
+            <br>
+            <label for="days">Number of Days:</label>
+            <input type="number" id="days" name="days" min="1" required>
+            <br>
             <button type="submit">Compare</button>
         </form>
-        <div class="footer">
-            <p>&copy; 2024 Stock Comparison Tool. All rights reserved.</p>
-        </div>
     </div>
 </body>
 </html>
