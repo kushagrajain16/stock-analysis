@@ -22,7 +22,6 @@ def fetch_and_display_data(ticker1, ticker2, days):
     end_date = datetime.now()
     start_date = end_date - timedelta(days=days)
 
-    # Fetch stock data
     stock1_data = yf.download(ticker1, start=start_date, end=end_date)
     stock2_data = yf.download(ticker2, start=start_date, end=end_date)
     market_data = yf.download('^NSEI', start=start_date, end=end_date)
@@ -32,18 +31,15 @@ def fetch_and_display_data(ticker1, ticker2, days):
             'error': 'One or both stock tickers are invalid or no data is available for the given period.'
         }
 
-    # Calculate daily returns
     stock1_data['Daily_Return'] = stock1_data['Adj Close'].pct_change()
     stock2_data['Daily_Return'] = stock2_data['Adj Close'].pct_change()
     market_data['Daily_Return'] = market_data['Adj Close'].pct_change()
 
-    # Check if 'Daily_Return' column is successfully created
     if 'Daily_Return' not in stock1_data.columns or 'Daily_Return' not in stock2_data.columns or 'Daily_Return' not in market_data.columns:
         return {
             'error': 'Failed to calculate daily returns for one or more stocks.'
         }
 
-    # Create a figure to visualize the daily returns
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=stock1_data.index, y=stock1_data['Daily_Return'],
                              mode='lines', name=ticker1, line=dict(color='blue')))
@@ -54,11 +50,9 @@ def fetch_and_display_data(ticker1, ticker2, days):
                       legend=dict(x=0.02, y=0.95))
     daily_returns_div = pio.to_html(fig, full_html=False)
 
-    # Calculate cumulative returns for the given period
     stock1_cumulative_return = (1 + stock1_data['Daily_Return']).cumprod() - 1
     stock2_cumulative_return = (1 + stock2_data['Daily_Return']).cumprod() - 1
 
-    # Create a figure to visualize the cumulative returns
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=stock1_cumulative_return.index, y=stock1_cumulative_return,
                              mode='lines', name=ticker1, line=dict(color='blue')))
@@ -69,11 +63,9 @@ def fetch_and_display_data(ticker1, ticker2, days):
                       legend=dict(x=0.02, y=0.95))
     cumulative_returns_div = pio.to_html(fig, full_html=False)
 
-    # Calculate historical volatility (standard deviation of daily returns)
     stock1_volatility = stock1_data['Daily_Return'].std()
     stock2_volatility = stock2_data['Daily_Return'].std()
 
-    # Create a figure to compare volatility
     fig = go.Figure()
     fig.add_bar(x=[ticker1, ticker2], y=[stock1_volatility, stock2_volatility],
                 text=[f'{stock1_volatility:.4f}', f'{stock2_volatility:.4f}'],
@@ -83,7 +75,6 @@ def fetch_and_display_data(ticker1, ticker2, days):
                       bargap=0.5)
     volatility_div = pio.to_html(fig, full_html=False)
 
-    # Calculate Beta for stock1 and stock2
     cov_stock1 = stock1_data['Daily_Return'].cov(market_data['Daily_Return'])
     var_market = market_data['Daily_Return'].var()
     beta_stock1 = cov_stock1 / var_market
@@ -91,13 +82,11 @@ def fetch_and_display_data(ticker1, ticker2, days):
     cov_stock2 = stock2_data['Daily_Return'].cov(market_data['Daily_Return'])
     beta_stock2 = cov_stock2 / var_market
 
-    # Compare Beta values
     if beta_stock1 > beta_stock2:
         conclusion = f"{ticker1} is more volatile (higher Beta) compared to {ticker2}."
     else:
         conclusion = f"{ticker2} is more volatile (higher Beta) compared to {ticker1}."
 
-    # Calculate Mean Squared Error (MSE) for stock1 and stock2
     mse_stock1 = ((stock1_data['Daily_Return'].dropna() - market_data['Daily_Return'].dropna()) ** 2).mean()
     mse_stock2 = ((stock2_data['Daily_Return'].dropna() - market_data['Daily_Return'].dropna()) ** 2).mean()
 
