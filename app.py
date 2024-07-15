@@ -22,9 +22,12 @@ def fetch_and_display_data(ticker1, ticker2, days):
     end_date = datetime.now()
     start_date = end_date - timedelta(days=days)
 
-    stock1_data = yf.download(ticker1, start=start_date, end=end_date)
-    stock2_data = yf.download(ticker2, start=start_date, end=end_date)
-    market_data = yf.download('^NSEI', start=start_date, end=end_date)
+    try:
+        stock1_data = yf.download(ticker1, start=start_date, end=end_date)
+        stock2_data = yf.download(ticker2, start=start_date, end=end_date)
+        market_data = yf.download('^NSEI', start=start_date, end=end_date)
+    except Exception as e:
+        return {'error': f'Error fetching data: {e}'}
 
     if stock1_data.empty or stock2_data.empty or market_data.empty:
         return {
@@ -50,8 +53,8 @@ def fetch_and_display_data(ticker1, ticker2, days):
                       legend=dict(x=0.02, y=0.95))
     daily_returns_div = pio.to_html(fig, full_html=False)
 
-    stock1_cumulative_return = (1 + stock1_data['Daily_Return']).cumprod() - 1
-    stock2_cumulative_return = (1 + stock2_data['Daily_Return']).cumprod() - 1
+    stock1_cumulative_return = (1 + stock1_data['Daily_Return'].fillna(0)).cumprod() - 1
+    stock2_cumulative_return = (1 + stock2_data['Daily_Return'].fillna(0)).cumprod() - 1
 
     fig = go.Figure()
     fig.add_trace(go.Scatter(x=stock1_cumulative_return.index, y=stock1_cumulative_return,
@@ -102,5 +105,4 @@ def fetch_and_display_data(ticker1, ticker2, days):
     }
 
 if __name__ == '__main__':
-    app.run(debug=False) 
-
+    app.run(debug=False)
